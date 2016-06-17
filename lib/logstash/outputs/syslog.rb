@@ -72,15 +72,6 @@ class LogStash::Outputs::Syslog < LogStash::Outputs::Base
   # The SSL CA certificate, chainfile or CA path. The system CA path is automatically included.
   config :ssl_cacert, :validate => :path
 
-  # SSL certificate path
-  config :ssl_cert, :validate => :path
-
-  # SSL key path
-  config :ssl_key, :validate => :path
-
-  # SSL key passphrase
-  config :ssl_key_passphrase, :validate => :password, :default => nil
-
   # use label parsing for severity and facility levels
   # use priority field if set to false
   config :use_labels, :validate => :boolean, :default => true
@@ -226,8 +217,6 @@ class LogStash::Outputs::Syslog < LogStash::Outputs::Base
   def setup_ssl
     require "openssl"
     ssl_context = OpenSSL::SSL::SSLContext.new
-    ssl_context.cert = OpenSSL::X509::Certificate.new(File.read(@ssl_cert))
-    ssl_context.key = OpenSSL::PKey::RSA.new(File.read(@ssl_key),@ssl_key_passphrase)
     if @ssl_verify
       cert_store = OpenSSL::X509::Store.new
       # Load the system default certificate path to the store
